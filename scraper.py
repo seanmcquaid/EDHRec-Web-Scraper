@@ -1,17 +1,25 @@
 import requests
 from bs4 import BeautifulSoup
+from selenium import webdriver
 
-base_url = "https://edhrec.com/commanders/arcades-the-strategist-wall-tribal"
+base_url = "https://edhrec.com/commanders/arcades-the-strategist"
 
-page = requests.get(base_url)
+options = webdriver.ChromeOptions()
+options.add_argument('--ignore-certificate-errors')
+options.add_argument('--incognito')
+options.add_argument('--headless')
+driver = webdriver.Chrome("/Users/seanmcquaid/development/chrome-selenium/chromedriver", chrome_options=options)
 
-soup = BeautifulSoup(page.text, "html.parser")
+driver.get(base_url)
+driver.implicitly_wait(100)
 
-cards = soup.find_all("div", class_= "cards")
+page = driver.page_source
 
-print(cards)
+soup = BeautifulSoup(page, "html.parser")
 
-x = 0
+cards = soup.findAll("div", {"class" : "nwname"})
 
-for x in cards:
-    print(x.getText())
+names = []
+
+for card in cards:
+    print(card.text)
